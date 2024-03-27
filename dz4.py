@@ -9,11 +9,11 @@ print('Random element:', result)
 import os
 
 folder = 'images\pony'
-c = []
+p = []
 
 for files in os.scandir(folder):
     if files.is_file():
-        c.append(files.name)
+        p.append(files.name)
 
-random_file = random.choice(c)
+random_file = random.choice(p)
 print('Random file:', random_file)
