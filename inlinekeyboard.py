@@ -7,6 +7,8 @@ Basic example for a bot that uses inline keyboards. For an in-depth explanation,
  https://github.com/python-telegram-bot/python-telegram-bot/wiki/InlineKeyboard-Example.
 """
 import logging
+import os
+import random
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
@@ -47,18 +49,35 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     folder = ''
 
     if query.data == '1':
-        folder = 'cats'
+        folder = 'images/pony'
     elif query.data == '2':
-        folder == 'dogs'
+        folder = 'images/dogs'
     else:
-        folder == 'cats'
+        d =[]
+        img = 'images'
+        for files in os.scandir(img):
+            d.append(files.name)
+        rfolder = random.choice(d)
+        folder = f'images/{rfolder}'
 
-    img_path = f'images/{folder}/пони1.png'
+    
+    
+    c = []
+    for files in os.scandir(folder):
+        if files.is_file():
+            c.append(files.name)
+    image_name = random.choice(c)
 
-    print(query.data)
+    image_path = f'{folder}/{image_name}'
 
-    # await query.edit_message_text(text=f"Selected option: {query.data}")
-    # await update.message.send_photo('images/cats/пони1.jpg')
+    await query.message.reply_photo(
+        photo=open(image_path, 'rb')
+    )
+    
+
+
+    await query.edit_message_text(text=f"Selected option: {query.data}")
+
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
