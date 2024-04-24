@@ -31,6 +31,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             InlineKeyboardButton("Dogs", callback_data="2"),
         ],
         [InlineKeyboardButton("Random", callback_data="3")],
+        [
+            InlineKeyboardButton("Name for pony", callback_data="4"),
+            InlineKeyboardButton("Name for dogs", callback_data="5"),
+        ],
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -47,32 +51,59 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await query.answer()
 
     folder = ''
+    txt = ''
 
     if query.data == '1':
         folder = 'images/pony'
     elif query.data == '2':
         folder = 'images/dogs'
-    else:
-        d =[]
+    elif query.data == '3':
+        d = []
         img = 'images'
         for files in os.scandir(img):
             d.append(files.name)
-        rfolder = random.choice(d)
-        folder = f'images/{rfolder}'
+        randfolder = random.choice(d)
+        folder = f'images/{randfolder}'
+    elif query.data == '4':
+        txt = open('pony.txt', 'r')
+    elif query.data == '5':
+        txt = open('dogs.txt', 'r')
 
+    def randomname(txt):
+        t = []
+        for i in txt:
+            t.append(i)
+        name = random.choice(t)
+        return name
+
+    if folder == '':
+        await query.message.reply_text(
+            text=f'Name: {randomname(txt)}'
+        )
     
     
-    c = []
-    for files in os.scandir(folder):
-        if files.is_file():
+    else:
+        c = []
+        for files in os.scandir(folder):
             c.append(files.name)
-    image_name = random.choice(c)
+        image_name = random.choice(c)
 
-    image_path = f'{folder}/{image_name}'
+        image_path = f'{folder}/{image_name}'
 
-    await query.message.reply_photo(
-        photo=open(image_path, 'rb')
-    )
+        await query.message.reply_photo(
+            photo=open(image_path, 'rb')
+        )
+
+        if query.data == '1':
+            txt2 = open('pony.txt', 'r')
+            await query.message.reply_text(
+                text=f'Name: {randomname(txt2)}'    
+            )
+        elif query.data == '2':
+            txt3 = open('dogs.txt', 'r')
+            await query.message.reply_text(
+                text=f'Name: {randomname(txt3)}'
+            )
     
 
 
